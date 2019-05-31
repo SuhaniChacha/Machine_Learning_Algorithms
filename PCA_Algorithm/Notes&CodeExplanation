@@ -1,0 +1,73 @@
+PCA 
+    -decomposition technique that allows ont to break down a highly multivariate dataset into a set of Orthogonal Components.
+    -When taken together in sufficient number these components can explain almost all of the dataset's variance.
+    -These Components deliever an abbreviated description of the datasets
+    
+What PCA does
+    - Identify the center point of the dataset
+    - Calculate Covariance matrix of data
+    - Calculate the eigenvectors of the covariance matrix
+    - Orthonormalizing the eigenvectors
+    - Calculating proportion of variance represented by each eigenvector.
+    
+Upacking Word Game
+    
+    Covariance : is effectively variance applied to multiple dimensions; it is variance between two or more variables
+    While a single value can capture the variance in 1D or variable, it is necessary to use a 2D matrx to capture the covariance between 2 variables, a 3D matrix to capture covariance between three variables and so on
+    
+    EigenVector: is a vector that is specified to a dataset and linear transformation. Specifically, it is the vector that does not change in direction before and after the transformation is performed.
+    
+    Orthogonaliztion: is process of finding 2 vectors that are orthogonal to one another. In a nD data space, the process takes a set of vectors and yields a aset of orthogonal vectors.
+    
+    Orthonormalization: is an orthogonalization process that also normalizes the product.
+    
+    Eigenvalue : (magnitude of eigenvector) is used to calculate the proportion of variance represented by each eigenvector. This is done by dividing the eigenvalue for each eigenvector by the sum of eigenvalues for all eigenvectors.
+    
+Summary : PCA algorithm has the effect of taking a dataset and transforming it into a new, lower-dimensional coordinate system.
+
+
+
+Implementation 
+
+
+DataSet : 
+        
+       - UCI handwritten dataset, distribution as part of scikit-learn
+       - This dataset is composed of 1,797 instances of handwritten digits gathered from 44 different writers.
+       - The input (pressure and location) from these authors' writing is resampled twice across an 8 x 8 grid 
+       - These maps can be transformed into feature vectors of length 64, which are then readily usable as analysis input.
+       -  With an input dataset of 64 features, there is an immediate appeal to using a technique like PCA to reduce the set of variables to a manageable amount. 
+       
+Code :
+
+    import numpy as np
+    from sklearn.datasets import load_digits
+    import matplotlib.pyplot as plt
+    from sklearn.decomposition import PCA
+    from sklearn.preprocessing import scale
+    from sklearn.lda import LDA
+    import matplotlib.cm as cm
+
+    digits = load_digits()
+    data = digits.data
+
+    n_samples, n_features = data.shape
+    n_digits = len(np.unique(digits.target))
+    labels = digits.target
+
+    pca = PCA(n_components=10)
+    data_r = pca.fit(data).transform(data)
+
+    print('explained variance ratio (first two components): %s' % str(pca.explained_variance_ratio_))
+    print('sum of explained variance (first two components): %s' % str(sum(pca.explained_variance_ratio_)))
+
+    X = np.arange(10)
+    ys = [i+x+(i*x)**2 for i in range(10)]
+
+    plt.figure()
+    colors = cm.rainbow(np.linspace(0, 1, len(ys)))
+    for c, I, target_name in zip(colors, [1,2,3,4,5,6,7,8,9,10], labels):
+        plt.scatter(data_r[labels == I, 0], data_r[labels == I, 1],c=c, alpha = 0.4)
+        plt.legend()
+        plt.title('Scatterplot of Points plotted in NEXT 10 Principal Components')
+        plt.show()
